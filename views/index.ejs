@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Send Image</title>
+  </head>
+  <body>
+    <h1>Upload and Send Image</h1>
+    <input type="file" id="fileInput" />
+    <input type="text" id="walletId" placeholder="Enter wallet ID" />
+    <button id="sendImage">Send Image</button>
+    <script>
+      document
+        .getElementById("sendImage")
+        .addEventListener("click", async () => {
+          const fileInput = document.getElementById("fileInput");
+          const walletId = document.getElementById("walletId").value;
+          console.log(walletId, fileInput.files[0]);
+
+          if (fileInput.files.length === 0 || !walletId) {
+            alert("Please select a file and enter a wallet ID.");
+            return;
+          }
+          const formData = new FormData();
+          formData.append("image", fileInput.files[0]);
+          formData.append("walletId", walletId);
+
+          // Log formData entries
+          for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+          }
+
+          try {
+            const response = await fetch("/send-image", {
+              method: "POST",
+              body: formData,
+            });
+            const result = await response.text();
+            alert(result);
+          } catch (error) {
+            console.error("Error sending image:", error);
+          }
+        });
+    </script>
+  </body>
+</html>
