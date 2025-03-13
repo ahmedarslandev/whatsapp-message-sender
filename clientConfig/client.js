@@ -1,8 +1,20 @@
-const { Client } = require("whatsapp-web.js");
+const { Client, LocalAuth } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
+const puppeteer = require("puppeteer-core"); // Import puppeteer-core
 
 async function CreateClient() {
-  const client = new Client();
+  // Launch Puppeteer with options
+  const browser = await puppeteer.launch({
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    // Add other puppeteer options here if needed
+  });
+
+  const client = new Client({
+    authStrategy: new LocalAuth({ dataPath: "./Whatsapp-session" }),
+    puppeteer: {
+      browser,
+    },
+  });
 
   // Generate QR code for WhatsApp login
   client.on("qr", (qr) => {
